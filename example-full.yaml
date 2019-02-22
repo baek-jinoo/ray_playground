@@ -90,6 +90,7 @@ worker_nodes:
 # dictionary from REMOTE_PATH: LOCAL_PATH, e.g.
 file_mounts: {
     "~/.mujoco/mjkey.txt": "~/.mujoco/mjkey.txt",
+    "/tmp/current_git_HEAD": "/home/jin/workspace/ray_playground/.git/HEAD",
 }
 
 # List of commands that will be run before `setup_commands`. If docker is
@@ -105,6 +106,12 @@ setup_commands:
     # - echo 'export PATH="$HOME/anaconda3/envs/tensorflow_p36/bin:$PATH"' >> ~/.bashrc
 
     # Install Anaconda.
+    - >-
+      git clone https://github.com/baek-jinoo/ray_playground.git $HOME/ray_playground
+      && cd $HOME/ray_playground
+      && git fetch --all
+      && git_HEAD=`cat /tmp/current_git_HEAD | cut -d \  -f 2`
+      && git checkout ${git_HEAD#"refs/heads/"}
     - >-
       wget https://repo.continuum.io/archive/Anaconda3-5.0.1-Linux-x86_64.sh -O ~/anaconda3.sh
       || true
