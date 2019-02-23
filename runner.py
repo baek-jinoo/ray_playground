@@ -8,9 +8,9 @@ ray_head_ip = "172.31.25.225"
 print('ray_head_ip', ray_head_ip)
 ray.init(redis_address=f'{ray_head_ip}:6379')
 
-BATCH_SIZE = 1000
-NUM_BATCHES = 7
-NUM_ITERS = 1200001
+BATCH_SIZE = 10
+NUM_BATCHES = 3
+NUM_ITERS = 12000
 
 class Network(object):
     def __init__(self, x, y):
@@ -90,7 +90,6 @@ for iteration in range(NUM_ITERS):
     # Take the mean of the different gradients. Each element of gradients_list is a list
     # of gradients, and we want to take the mean of each one.
     mean_grads = [sum([gradients[i] for gradients in gradients_list]) / len(gradients_list) for i in range(len(gradients_list[0]))]
-    print('mean gradients', mean_grads)
 
     feed_dict = {grad[0]: mean_grad for (grad, mean_grad) in zip(local_network.grads, mean_grads)}
     local_network.sess.run(local_network.train, feed_dict=feed_dict)
